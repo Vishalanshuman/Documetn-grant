@@ -189,7 +189,7 @@ alembic upgrade head
 ## Seed Database
 
 ```bash
-python -m app.db.seed
+python -m seed
 ```
 
 ---
