@@ -11,12 +11,17 @@ from app.models.user import User
 pytestmark = pytest.mark.asyncio
 
 
-async def test_create_grant(client: AsyncClient, test_db):
+async def test_create_grant(client: AsyncClient, db_session):
     # Seed data
-    user_id = "11111111-1111-1111-1111-111111111111"
-    doc_id = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+    user_id = uuid.uuid4()
+    doc_id = uuid.uuid4()
 
+    user = User(name=str(user_id), id=user_id)
+    document = Document(name=str(doc_id), id=doc_id)
+    db_session.add_all([user, document])
+    await db_session.commit()
 
+    # Create grant
     response = await client.post(
         "/api/v1/grants",
         params={"creator_id": str(user_id)},
