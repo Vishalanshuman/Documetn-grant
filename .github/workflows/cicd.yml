@@ -3,7 +3,7 @@ name: FastAPI CI
 on:
   push:
     branches:
-      - mster
+      - master
 
   pull_request:
     branches:
