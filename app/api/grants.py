@@ -62,14 +62,14 @@ async def list_grants(
 @router.get("/grants/{grant_id}", response_model=Grant)
 async def get_grant(grant_id: UUID, user_id: UUID, db: AsyncSession = Depends(get_db)):
     grant = await grant_crud.get(db, grant_id)
+    if not grant:
+        raise HTTPException(status_code=404, detail="Grant not found")
     if grant.grantee_id != user_id and grant.creator_id != user_id:
         raise HTTPException(status_code=403, detail="Forbidden")
     if grant.revoked or normalize_datetime(grant.expires_at) < datetime.utcnow():
         raise HTTPException(status_code=404, detail="Grant not found")
     if grant.permission not in [GrantPermission.VIEW, GrantPermission.EDIT, GrantPermission.ADMIN]:
         raise HTTPException(status_code=400, detail="Invalid permission")
-    if not grant:
-        raise HTTPException(status_code=404, detail="Grant not found")
     return grant
 
 
