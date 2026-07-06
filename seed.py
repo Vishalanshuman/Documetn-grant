@@ -14,7 +14,6 @@ from app.models.document import Document
 ALICE_ID = UUID("11111111-1111-1111-1111-111111111111")
 BOB_ID = UUID("22222222-2222-2222-2222-222222222222")
 CAROL_ID = UUID("33333333-3333-3333-3333-333333333333")
-
 Q1_REPORT_ID = UUID("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa")
 ROADMAP_ID = UUID("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb")
 BUDGET_ID = UUID("cccccccc-cccc-cccc-cccc-cccccccccccc")
