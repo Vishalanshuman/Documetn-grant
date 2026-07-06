@@ -30,6 +30,9 @@ services:
     env_file:
       - .env
 
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:root@db:5432/grants_svc
+
     restart: always
 
 volumes:
