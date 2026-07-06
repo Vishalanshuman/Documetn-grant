@@ -86,7 +86,8 @@ jobs:
             done
 
             echo "Running Alembic migrations..."
-            docker compose run --rm app alembic upgrade head
+            # Pass the repository secret into the container environment
+            docker compose run --rm -e DATABASE_URL="${{ secrets.DATABASE_URL }}" app alembic upgrade head
 
             echo "Starting FastAPI..."
             docker compose up -d app
