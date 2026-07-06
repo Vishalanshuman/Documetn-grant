@@ -88,7 +88,13 @@ jobs:
             done
 
             echo "Running Alembic migrations..."
-            docker compose run --rm -e DATABASE_URL="postgresql+asyncpg://postgres:root@db:5432/grants_svc" app alembic upgrade head
+            for i in {1..10}; do
+              if docker compose run --rm -e DATABASE_URL="postgresql+asyncpg://postgres:root@db:5432/grants_svc" app alembic upgrade head; then
+                break
+              fi
+              echo "Alembic failed, retrying in 5 seconds..."
+              sleep 5
+            done
 
             echo "Starting FastAPI..."
             docker compose up -d app
