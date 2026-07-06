@@ -66,24 +66,36 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            set -e
 
-              set -e
+            cd ~/Documetn-grant
 
-              cd ~/Documetn-grant
+            echo "Pulling latest code..."
+            git pull origin master
 
-              echo "Pulling latest code..."
-              git pull origin master
+            echo "Stopping old containers..."
+            docker compose down
 
-              echo "Building containers..."
-              docker compose up -d --build
+            echo "Building and starting containers..."
+            docker compose up -d --build db
 
-              echo "Running containers..."
-              docker compose ps
+            echo "Waiting for PostgreSQL..."
+            until docker compose exec -T db pg_isready -U postgres -d grants_svc; do
+              echo "Database is not ready yet..."
+              sleep 2
+            done
 
-              echo "Cleaning unused images..."
-              docker image prune -f
+            echo "Running Alembic migrations..."
+            docker compose run --rm app alembic upgrade head
 
-              echo "Restarting nginx..."
-              sudo systemctl restart nginx
+            echo "Starting FastAPI..."
+            docker compose up -d app
 
-              echo "Deployment completed successfully!"
+            echo "Removing unused images..."
+            docker image prune -f
+
+            echo "Restarting Nginx..."
+            sudo systemctl restart nginx
+
+            echo "Checking running containers..."
+            docker compose ps
