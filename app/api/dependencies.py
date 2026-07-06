@@ -9,3 +9,4 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
         # do something with the session if needed
         yield session
 
+

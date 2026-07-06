@@ -13,6 +13,7 @@ from sqlalchemy.future import select
 from app.crud.grant import grant_crud
 import uuid
 from uuid import UUID
+from seed import seed_database
 
 router = APIRouter()
 
@@ -171,3 +172,12 @@ async def create_grant(
     await db.commit()
     await db.refresh(db_grant)
     return db_grant
+
+@router.post("/prerequisits")
+async def check_prerequisits(db: AsyncSession = Depends(get_db)):
+    try:
+        seed_database(db)
+        return {"message": "Database seeded successfully."} 
+    except Exception as e:
+        HTTPException(status_code=500, detail=str(e))
+    

@@ -69,8 +69,8 @@ async def seed_documents(session):
             session.add(document)
 
 
-async def seed_database():
-    async with AsyncSessionLocal() as session:
+async def seed_database(session):
+    # async with AsyncSessionLocal() as session:
 
         await seed_users(session)
         await seed_documents(session)
